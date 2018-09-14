@@ -38,16 +38,13 @@ HTTP_PORT="8008"
 DATETIME=$(date +"%Y%m%d%H%M%S")
 KERNELARCH=$(uname -m)
 SCRIPT_NOTICE="This install script is only intended to run on Debian 7.X"
-
 #Django bug https://code.djangoproject.com/ticket/16017
 export LANG="en_US.UTF-8"
-
-
 # Identify Linux Distribution
 func_identify_os() {
     if [ -f /etc/debian_version ] ; then
         DIST='DEBIAN'
-        if [ "$(lsb_release -cs)" != "wheezy" ] && [ "$(lsb_release -cs)" != "jessie" ]; then
+        if [ "$(lsb_release -cs)" != "xenial" ] && [ "$(lsb_release -cs)" != "xenial" ]; then
             echo $SCRIPT_NOTICE
             exit 255
         fi
@@ -99,17 +96,12 @@ func_install_landing_page() {
             rm /etc/nginx/conf.d/default.conf
         ;;
     esac
-
     cp -rf /usr/src/cdr-stats/install/nginx/global /etc/nginx/
-
     #Restart Nginx
     service nginx restart
-
     #Update Welcome page IP
-    sed -i "s/LOCALHOST/$IPADDR:$HTTP_PORT/g" $WELCOME_DIR/index.html
+    sed -i "s/LOCALHOST/$IPADDR:$HTTP_PORT/g" /index.html
 }
-
-
 # Checking Python dependencies
 func_check_dependencies() {
     echo ""
@@ -148,7 +140,6 @@ func_check_dependencies() {
     echo ""
 }
 
-
 #Function to install Dependencies
 func_install_dependencies(){
 
@@ -174,21 +165,17 @@ func_install_dependencies(){
             export LANG=en_US.UTF-8
             export LC_ALL=en_US.UTF-8
             locale-gen en_US.UTF-8
-
             # dpkg-reconfigure locales
             # apt-get -y install --reinstall language-pack-en
-
             apt-get -y remove apache2.2-common apache2
             apt-get -y install sudo curl
             apt-get -y install hdparm htop vim
             update-alternatives --set editor /usr/bin/vim.tiny
-
             #Install Postgresql
             apt-get -y install libpq-dev
             apt-get -y install postgresql-9.4 postgresql-contrib-9.4
             pg_createcluster 9.4 main --start
             /etc/init.d/postgresql start
-
             apt-get -y install python-software-properties
             apt-get -y install python-pandas
             apt-get -y install python-setuptools python-dev build-essential
