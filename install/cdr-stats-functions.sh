@@ -188,6 +188,7 @@ func_install_dependencies(){
             apt-get install -y nodejs
             #Memcached
             apt-get -y install memcached
+            pip install --upgrade pip
         ;;
         'CENTOS')
             yum -y groupinstall "Development Tools"
