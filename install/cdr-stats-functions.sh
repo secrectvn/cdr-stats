@@ -189,6 +189,7 @@ func_install_dependencies(){
             #Memcached
             apt-get -y install memcached
             python -m pip install --upgrade pip
+            pip install cython
 
         ;;
         'CENTOS')
